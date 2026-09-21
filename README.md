@@ -1,32 +1,157 @@
-# React + TypeScript + Vite
+# 🐾 Petstore Showcase — Interactive `openapi-sync` Playground
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+> **Welcome to the live interactive playground for [`openapi-sync`](https://github.com/akintomiwa-fisayo/openapi-sync)!**  
+> This project shows how `openapi-sync` transforms a raw OpenAPI 3.0 specification into **production-ready TypeScript types**, **runtime Zod schemas**, and **type-safe TanStack React Query hooks** — all automated with zero hand-written boilerplate.
 
-Currently, two official plugins are available:
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-openapi--sync-blue?logo=github)](https://github.com/akintomiwa-fisayo/openapi-sync)
+[![Docs](https://img.shields.io/badge/Docs-openapi--sync.com-green)](https://openapi-sync.com/docs)
+[![npm version](https://img.shields.io/npm/v/openapi-sync.svg)](https://www.npmjs.com/package/openapi-sync)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## ⚡ Quick Tour: 3 Things To Try Right Now
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 1. 🖥️ Explore the Live UI (Preview Window)
+- **Pet Catalog**: Filters pets by status (`available`, `pending`, `sold`) with pagination. Powered directly by the generated `useFindPetsByStatus()` hook.
+- **Adopt / Order Pet**: Click **"Adopt / Order Pet"** on any pet card. Orders are pre-validated in the browser using the generated `IPostStoreOrderDTOSchema` before being submitted with `usePlaceOrder()`.
+- **Add Pet Page**: Fill in the form to test live runtime validation with `IPostPetDTOSchema` and submit via `useAddPet()`.
+- **Order Inspection**: Navigate to **"Store Orders"** to query `/store/order/{orderId}` directly using `useGetOrderById()`.
 
-## Expanding the Oxlint configuration
+---
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+### 2. 📂 Inspect the Generated Code
+Open the file tree on the left and check out the code generated from the Swagger Petstore spec:
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
+| Feature | File Path | What to notice |
+| :--- | :--- | :--- |
+| ⚙️ **Config** | [`openapi.sync.json`](./openapi.sync.json) | The single configuration file that drives synchronization. |
+| 🏷️ **TypeScript Types** | [`src/api/petstore/types/shared.ts`](./src/api/petstore/types/shared.ts) | Fully typed `IPet`, `IOrder`, `ICategory`, `ITag`, and enums. |
+| 🛡️ **Zod Validation** | [`src/api/petstore/validations.ts`](./src/api/petstore/validations.ts) | Strict runtime schemas (`IPostPetDTOSchema`, `IPostStoreOrderDTOSchema`). |
+| ⚡ **React Query Hooks** | [`src/api/petstore/client/hooks.ts`](./src/api/petstore/client/hooks.ts) | Fully typed query & mutation hooks with inferred parameters & responses. |
+| 🌐 **Axios Client** | [`src/api/petstore/client/clients.ts`](./src/api/petstore/client/clients.ts) | Configured API client communicating with Swagger sandbox. |
+
+---
+
+### 3. 💻 Run the CLI in the Terminal
+Open the built-in terminal at the bottom of StackBlitz and try these commands:
+
+```bash
+# 1. Run openapi-sync diagnostics & health check
+npm run api:doctor
+
+# 2. View all parsed endpoints from the Petstore spec
+npm run api:endpoints
+
+# 3. Validate your spec contracts
+npm run api:validate
+
+# 4. Regenerate all types, Zod schemas, and client hooks
+npm run api:sync
+```
+
+Want to test a dry-run without modifying disk?
+```bash
+npx openapi-sync sync --dry-run --json
+```
+
+---
+
+## 🧩 How `openapi-sync` Powers This App
+
+### 1. TypeScript Types (Zero hand-written contracts)
+```ts
+import type { IPet, IOrder } from './api/petstore/types/shared';
+
+// Fully inferred model properties: id, name, category, photoUrls, tags, status
+const handleSelect = (pet: IPet) => {
+  console.log(pet.name, pet.photoUrls);
+};
+```
+
+### 2. Runtime Schema Validation with Zod
+```ts
+import { IPostPetDTOSchema } from './api/petstore/validations';
+
+// Catches malformed user input or bad API payloads at runtime before state updates
+const validationResult = IPostPetDTOSchema.safeParse(newPet);
+if (!validationResult.success) {
+  console.error(validationResult.error.format());
 }
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+### 3. Framework-Native React Query Hooks
+```ts
+import { useFindPetsByStatus } from './api/petstore/client/hooks';
+
+// Parameters and response data are 100% typed with zero generic wrangling
+const { data: pets, isLoading, error } = useFindPetsByStatus({
+  query: { status: 'available' },
+});
+```
+
+---
+
+## 📁 Repository Structure
+
+```
+├── openapi.sync.json           # openapi-sync master configuration
+├── src/
+│   ├── api/
+│   │   └── petstore/           # ⚡ AUTOMATICALLY GENERATED BY openapi-sync
+│   │       ├── client/         # Generated React Query v5 hooks & Axios clients
+│   │       ├── types/          # Generated TypeScript interfaces & models
+│   │       ├── endpoints.ts    # Centralized endpoint definitions
+│   │       └── validations.ts  # Generated Zod runtime validation schemas
+│   ├── components/
+│   │   ├── Navbar.tsx          # Navigation header
+│   │   ├── OrderModal.tsx      # Modal showcasing Zod validation & usePlaceOrder
+│   │   ├── Pagination.tsx      # Accessible pagination control
+│   │   ├── PetCard.tsx         # Pet card component with fallback images
+│   │   └── PetsGrid.tsx        # Grid wrapper for pet list rendering
+│   ├── pages/
+│   │   ├── CatalogPage.tsx     # Pet catalog powered by useFindPetsByStatus
+│   │   ├── AddPetPage.tsx      # Form powered by Zod validation & useAddPet
+│   │   └── OrdersPage.tsx      # Orders inspector powered by useGetOrderById
+│   ├── App.tsx                 # Root application with React Query client provider
+│   └── index.css               # Modern glassmorphism & responsive dark styling
+└── package.json
+```
+
+---
+
+## 🚀 Use `openapi-sync` in Your Own Project
+
+Install `openapi-sync` as a dev dependency:
+
+```bash
+npm install -D openapi-sync
+# or
+pnpm add -D openapi-sync
+# or
+yarn add -D openapi-sync
+```
+
+Initialize your configuration in seconds:
+
+```bash
+npx openapi-sync init
+```
+
+Or sync directly with any OpenAPI URL / local file:
+
+```bash
+npx openapi-sync sync --api-url https://petstore3.swagger.io/api/v3/openapi.json
+```
+
+---
+
+## 🔗 Useful Links
+
+- ⭐️ **GitHub**: [github.com/akintomiwa-fisayo/openapi-sync](https://github.com/akintomiwa-fisayo/openapi-sync)
+- 📖 **Documentation**: [openapi-sync.com/docs](https://openapi-sync.com/docs)
+- 📦 **NPM**: [npmjs.com/package/openapi-sync](https://www.npmjs.com/package/openapi-sync)
+- 🐛 **Report an Issue**: [github.com/akintomiwa-fisayo/openapi-sync/issues](https://github.com/akintomiwa-fisayo/openapi-sync/issues)
+
+---
+*Built to showcase the power of automated API synchronization for modern frontend development.*
