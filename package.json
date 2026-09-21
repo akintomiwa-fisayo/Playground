@@ -1,0 +1,35 @@
+{
+  "name": "petstore-openapi-sync-showcase",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview",
+    "api:sync": "openapi-sync",
+    "api:validate": "openapi-sync validate",
+    "api:doctor": "openapi-sync doctor",
+    "api:endpoints": "openapi-sync list-endpoints",
+    "api:client": "openapi-sync generate-client --type react-query"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.103.1",
+    "axios": "^1.20.0",
+    "lucide-react": "^1.47.0",
+    "openapi-sync": "^6.4.2",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "oxlint": "^1.81.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0"
+  }
+}

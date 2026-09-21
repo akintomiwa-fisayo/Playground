@@ -1,0 +1,25 @@
+{
+  "petstore": [
+    "/Users/user1/Documents/Playground/src/api/petstore/endpoints.ts",
+    "/Users/user1/Documents/Playground/src/api/petstore/types/shared.ts",
+    "/Users/user1/Documents/Playground/src/api/petstore/types/index.ts",
+    "/Users/user1/Documents/Playground/src/api/petstore/validations.ts",
+    "/Users/user1/Documents/Playground/src/api/petstore/client/clients.ts",
+    "/Users/user1/Documents/Playground/src/api/petstore/client/hooks.ts"
+  ],
+  "clients": {
+    "petstore": [
+      "/Users/user1/Documents/Playground/src/api/petstore/client/clients.ts",
+      "/Users/user1/Documents/Playground/src/api/petstore/client/hooks.ts"
+    ]
+  },
+  "staleClients": {
+    "petstore": []
+  },
+  "clientTypes": {
+    "petstore": "react-query"
+  },
+  "configClientTypes": {
+    "petstore": "react-query"
+  }
+}

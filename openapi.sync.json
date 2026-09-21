@@ -1,0 +1,41 @@
+{
+  "$schema": "./node_modules/openapi-sync/openapi.sync.schema.json",
+  "server": "https://petstore3.swagger.io/api/v3",
+  "folder": "./src/api",
+  "api": {
+    "petstore": "https://petstore3.swagger.io/api/v3/openapi.json"
+  },
+  "types": {
+    "name": {
+      "prefix": "I",
+      "useOperationId": true
+    }
+  },
+  "endpoints": {
+    "name": {
+      "useOperationId": true
+    },
+    "value": {
+      "includeServer": true
+    },
+    "doc": {
+      "showCurl": false
+    }
+  },
+  "clientGeneration": {
+    "enabled": true,
+    "type": "react-query",
+    "outputDir": "src/api/petstore/client",
+    "reactQuery": {
+      "version": 5,
+      "mutations": true
+    }
+  },
+  "validations": {
+    "library": "zod"
+  },
+  "customCode": {
+    "enabled": true,
+    "position": "bottom"
+  }
+}
