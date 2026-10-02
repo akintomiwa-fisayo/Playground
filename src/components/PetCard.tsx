@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ShoppingBag } from 'lucide-react';
+import routes from '../route-sage';
 import type { IPet } from '../api/petstore/types/shared';
 
 export const PET_IMAGES = [
@@ -24,6 +26,7 @@ export const PetCard: React.FC<PetCardProps> = ({
   onSelectForOrder,
   isPreview = false,
 }) => {
+  const navigate = useNavigate();
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
   const [fallbackFailed, setFallbackFailed] = useState(false);
 
@@ -78,7 +81,14 @@ export const PetCard: React.FC<PetCardProps> = ({
       <div className="pet-content">
         <div className="pet-header">
           <div>
-            <h3 className="pet-name">{pet.name || 'Unnamed Pet'}</h3>
+            <h3
+              className="pet-name"
+              style={{ cursor: pet.id ? 'pointer' : 'default' }}
+              onClick={() => pet.id && navigate(routes.pets.$petId(String(pet.id)).url)}
+              title="Click to view pet details"
+            >
+              {pet.name || 'Unnamed Pet'}
+            </h3>
             <span className="pet-category">
               🏷️ {pet.category?.name || 'General Companion'}
             </span>

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sparkles, Filter, ShoppingBag, Check, AlertCircle, Layers } from 'lucide-react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import routes from '../route-sage';
 import type { IPet } from '../api/petstore/types/shared';
 import { useFindPetsByStatus } from '../api/petstore/client/hooks';
 import { Pagination } from '../components/Pagination';
@@ -12,8 +14,19 @@ interface CatalogPageProps {
 }
 
 export const CatalogPage: React.FC<CatalogPageProps> = ({ onSelectPetForOrder }) => {
-  const [statusFilter, setStatusFilter] = useState<'available' | 'pending' | 'sold'>('available');
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const urlStatus = searchParams.get('status') as 'available' | 'pending' | 'sold' | null;
+  const initialStatus = urlStatus === 'pending' || urlStatus === 'sold' || urlStatus === 'available' ? urlStatus : 'available';
+
+  const [statusFilter, setStatusFilter] = useState<'available' | 'pending' | 'sold'>(initialStatus);
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    if (urlStatus && (urlStatus === 'available' || urlStatus === 'pending' || urlStatus === 'sold')) {
+      setStatusFilter(urlStatus);
+    }
+  }, [urlStatus]);
 
   
   const petsQuery = useFindPetsByStatus({
@@ -96,21 +109,21 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onSelectPetForOrder })
           <button
             id="filter-available-btn"
             className={`filter-btn ${statusFilter === 'available' ? 'active-available' : ''}`}
-            onClick={() => setStatusFilter('available')}
+            onClick={() => navigate(routes.catalog.filter({ status: 'available' }).url)}
           >
             Available
           </button>
           <button
             id="filter-pending-btn"
             className={`filter-btn ${statusFilter === 'pending' ? 'active-pending' : ''}`}
-            onClick={() => setStatusFilter('pending')}
+            onClick={() => navigate(routes.catalog.filter({ status: 'pending' }).url)}
           >
             Pending
           </button>
           <button
             id="filter-sold-btn"
             className={`filter-btn ${statusFilter === 'sold' ? 'active-sold' : ''}`}
-            onClick={() => setStatusFilter('sold')}
+            onClick={() => navigate(routes.catalog.filter({ status: 'sold' }).url)}
           >
             Sold
           </button>

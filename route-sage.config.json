@@ -1,0 +1,6 @@
+{
+  "$schema": "./node_modules/route-sage/schema/route-sage.config.schema.json",
+  "rootFolder": "src/routes",
+  "outputFile": "src/route-sage",
+  "typescript": true
+}

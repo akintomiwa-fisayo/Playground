@@ -12,7 +12,12 @@
     "api:validate": "openapi-sync validate",
     "api:doctor": "openapi-sync doctor",
     "api:endpoints": "openapi-sync list-endpoints",
-    "api:client": "openapi-sync generate-client --type react-query"
+    "api:client": "openapi-sync generate-client --type react-query",
+    "routes:gen": "route-sage",
+    "routes:watch": "route-sage --watch",
+    "routes:doctor": "route-sage doctor",
+    "routes:visualize": "route-sage visualize",
+    "routes:inspect": "route-sage inspect --json"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.103.1",
@@ -21,6 +26,8 @@
     "openapi-sync": "^6.4.2",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.4",
+    "route-sage": "^3.2.0",
     "zod": "^4.6.5"
   },
   "devDependencies": {

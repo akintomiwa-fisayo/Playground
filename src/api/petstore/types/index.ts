@@ -40,6 +40,10 @@ export type IgetUserByName200Response = Shared.IUser;
 export type IupdateUserDTO = Shared.IUser;
 
 
+
+
+
+
 // ============================================================
 // 🔒 CUSTOM CODE START
 // Add your custom code above this line

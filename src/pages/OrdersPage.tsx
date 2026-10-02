@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ShoppingBag, Package, Calendar, Search, RefreshCw, AlertCircle, CheckCircle2 } from 'lucide-react';
+import routes from '../route-sage';
 import type { IOrder } from '../api/petstore/types/shared';
 import { useGetOrderById } from '../api/petstore/client/hooks';
 
@@ -9,6 +11,10 @@ interface OrdersPageProps {
 }
 
 export const OrdersPage: React.FC<OrdersPageProps> = ({ orders, onNavigateToCatalog }) => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const currentStatus = searchParams.get('status') || 'all';
+  const filteredOrders = currentStatus === 'all' ? orders : orders.filter(o => o.status === currentStatus);
   const [lookupInput, setLookupInput] = useState('');
   const [searchedOrderId, setSearchedOrderId] = useState<number | null>(null);
 
@@ -111,9 +117,36 @@ export const OrdersPage: React.FC<OrdersPageProps> = ({ orders, onNavigateToCata
       </div>
 
       {/* Session Orders List */}
-      <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>Session Placed Orders ({orders.length})</h2>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1rem' }}>
+        <h2 style={{ fontSize: '1.25rem', margin: 0 }}>Session Placed Orders ({filteredOrders.length})</h2>
 
-      {orders.length === 0 ? (
+        {/* Route Sage .href() Query Helpers */}
+        <div style={{ display: 'flex', gap: '0.35rem' }}>
+          <button
+            className={`filter-btn ${currentStatus === 'all' ? 'active-available' : ''}`}
+            onClick={() => navigate(routes.orders.url)}
+            style={{ padding: '0.3rem 0.65rem', fontSize: '0.8rem' }}
+          >
+            All
+          </button>
+          <button
+            className={`filter-btn ${currentStatus === 'placed' ? 'active-available' : ''}`}
+            onClick={() => navigate(routes.orders.href({ status: 'placed' }))}
+            style={{ padding: '0.3rem 0.65rem', fontSize: '0.8rem' }}
+          >
+            Placed
+          </button>
+          <button
+            className={`filter-btn ${currentStatus === 'delivered' ? 'active-available' : ''}`}
+            onClick={() => navigate(routes.orders.href({ status: 'delivered' }))}
+            style={{ padding: '0.3rem 0.65rem', fontSize: '0.8rem' }}
+          >
+            Delivered
+          </button>
+        </div>
+      </div>
+
+      {filteredOrders.length === 0 ? (
         <div className="empty-state">
           <ShoppingBag size={48} color="var(--text-muted)" />
           <h3>No Orders Placed Yet in this Session</h3>
@@ -126,7 +159,7 @@ export const OrdersPage: React.FC<OrdersPageProps> = ({ orders, onNavigateToCata
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {orders.map((order, idx) => (
+          {filteredOrders.map((order, idx) => (
             <div key={`${order.id}-${idx}`} className="card card-interactive order-card-row">
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1, minWidth: 0 }}>
                 <div className="stat-icon-wrapper stat-icon-available">
